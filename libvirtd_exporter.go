@@ -41,10 +41,6 @@ func main() {
 			"libvirt.uri",
 			"Libvirt Connection URI",
 		).Default("qemu:///system").String()
-		libvirtNova = kingpin.Flag(
-			"libvirt.nova",
-			"Parse Libvirt Nova metadata",
-		).Bool()
 	)
 
 	kingpin.Version(version.Print("libvirtd_exporter"))
@@ -62,7 +58,7 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	domainStats, err := collectors.NewDomainStatsCollector(*libvirtNova, conn)
+	domainStats, err := collectors.NewDomainStatsCollector(conn)
 	if err != nil {
 		log.Fatalln(err)
 	}

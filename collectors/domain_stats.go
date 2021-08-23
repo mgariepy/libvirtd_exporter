@@ -86,227 +86,228 @@ type NovaFlavorMetadata struct {
 
 type NovaOwnerMetadata struct {
 	UUID string `xml:"uuid,attr"`
+	Name string `xml:",chardata"`
 }
 
 type NovaMetadata struct {
 	Seconds      float64            `xml:"omitempty"`
 	CreationTime string             `xml:"creationTime"`
+	Instance     string             `xml:"name"`
 	Flavor       NovaFlavorMetadata `xml:"flavor"`
 	User         NovaOwnerMetadata  `xml:"owner>user"`
 	Project      NovaOwnerMetadata  `xml:"owner>project"`
 }
 
 // nolint:funlen
-func NewDomainStatsCollector(nova bool, connection *libvirt.Connect) (*DomainStatsCollector, error) {
+func NewDomainStatsCollector(connection *libvirt.Connect) (*DomainStatsCollector, error) {
 	return &DomainStatsCollector{
 		Connection: connection,
-		Nova:       nova,
 
 		DomainSeconds: prometheus.NewDesc(
 			"libvirtd_domain_seconds",
 			"seconds since creation time",
-			[]string{"uuid", "instance_type", "user_id", "project_id"}, nil,
+			[]string{"uuid", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 
 		DomainDomainState: prometheus.NewDesc(
 			"libvirtd_domain_domain_state",
 			"state of the VM (virDomainState enum)",
-			[]string{"uuid"}, nil,
+			[]string{"uuid", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainDomainStateReason: prometheus.NewDesc(
 			"libvirtd_domain_domain_state_reason",
 			"reason for entering given state (virDomain*Reason enum)",
-			[]string{"uuid"}, nil,
+			[]string{"uuid", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 
 		DomainCPUTime: prometheus.NewDesc(
 			"libvirtd_domain_cpu_time",
 			"total cpu time spent for this domain in nanoseconds",
-			[]string{"uuid"}, nil,
+			[]string{"uuid", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainCPUUser: prometheus.NewDesc(
 			"libvirtd_domain_cpu_user",
 			"user cpu time spent in nanoseconds",
-			[]string{"uuid"}, nil,
+			[]string{"uuid", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainCPUSystem: prometheus.NewDesc(
 			"libvirtd_domain_cpu_system",
 			"system cpu time spent in nanoseconds",
-			[]string{"uuid"}, nil,
+			[]string{"uuid", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 
 		DomainBalloonCurrent: prometheus.NewDesc(
 			"libvirtd_domain_balloon_current",
 			"the memory in kiB currently used",
-			[]string{"uuid"}, nil,
+			[]string{"uuid", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainBalloonMaximum: prometheus.NewDesc(
 			"libvirtd_domain_balloon_maximum",
 			"the maximum memory in kiB allowed",
-			[]string{"uuid"}, nil,
+			[]string{"uuid", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainBalloonSwapIn: prometheus.NewDesc(
 			"libvirtd_domain_balloon_swap_in",
 			"kiB of memory swapped in",
-			[]string{"uuid"}, nil,
+			[]string{"uuid", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainBalloonSwapOut: prometheus.NewDesc(
 			"libvirtd_domain_balloon_swap_out",
 			"kiB of memory swapped out",
-			[]string{"uuid"}, nil,
+			[]string{"uuid", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainBalloonMajorFault: prometheus.NewDesc(
 			"libvirtd_domain_balloon_major_fault",
 			"number of page faults where disk I/O was required",
-			[]string{"uuid"}, nil,
+			[]string{"uuid", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainBalloonMinorFault: prometheus.NewDesc(
 			"libvirtd_domain_balloon_minor_fault",
 			"number of page faults where disk I/O was not required",
-			[]string{"uuid"}, nil,
+			[]string{"uuid", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainBalloonUnused: prometheus.NewDesc(
 			"libvirtd_domain_balloon_unused",
 			"KiB of memory left unused by the system",
-			[]string{"uuid"}, nil,
+			[]string{"uuid", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainBalloonAvailable: prometheus.NewDesc(
 			"libvirtd_domain_balloon_available",
 			"KiB of memory usable by the domain",
-			[]string{"uuid"}, nil,
+			[]string{"uuid", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainBalloonRss: prometheus.NewDesc(
 			"libvirtd_domain_balloon_rss",
 			"resident set size of domain in KiB",
-			[]string{"uuid"}, nil,
+			[]string{"uuid", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainBalloonUsable: prometheus.NewDesc(
 			"libvirtd_domain_balloon_usable",
 			"KiB of memory that can be reclaimed without swapping",
-			[]string{"uuid"}, nil,
+			[]string{"uuid", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainBalloonDiskCaches: prometheus.NewDesc(
 			"libvirtd_domain_balloon_disk_caches",
 			"KiB of memory used by disk caches",
-			[]string{"uuid"}, nil,
+			[]string{"uuid", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainBalloonHugetlbPgAlloc: prometheus.NewDesc(
 			"libvirtd_domain_balloon_hugetlb_pgalloc",
 			"number of successful huge page allocations done by virtio balloon",
-			[]string{"uuid"}, nil,
+			[]string{"uuid", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainBalloonHugetlbPgFail: prometheus.NewDesc(
 			"libvirtd_domain_balloon_hugetlb_pgfail",
 			"number of failed huge page allocations done by virtio balloon",
-			[]string{"uuid"}, nil,
+			[]string{"uuid", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 
 		DomainVcpuState: prometheus.NewDesc(
 			"libvirtd_domain_vcpu_state",
 			"state of the virtual CPU (virVcpuState enum)",
-			[]string{"uuid", "vcpu"}, nil,
+			[]string{"uuid", "vcpu", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainVcpuTime: prometheus.NewDesc(
 			"libvirtd_domain_vcpu_time",
 			"virtual cpu time spent",
-			[]string{"uuid", "vcpu"}, nil,
+			[]string{"uuid", "vcpu", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 
 		DomainNetRxBytes: prometheus.NewDesc(
 			"libvirtd_domain_net_rx_bytes",
 			"bytes received",
-			[]string{"uuid", "interface"}, nil,
+			[]string{"uuid", "interface", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainNetRxPkts: prometheus.NewDesc(
 			"libvirtd_domain_net_rx_packets",
 			"packets received",
-			[]string{"uuid", "interface"}, nil,
+			[]string{"uuid", "interface", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainNetRxErrs: prometheus.NewDesc(
 			"libvirtd_domain_net_rx_errors",
 			"receive errors",
-			[]string{"uuid", "interface"}, nil,
+			[]string{"uuid", "interface", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainNetRxDrop: prometheus.NewDesc(
 			"libvirtd_domain_net_rx_drop",
 			"receive packets dropped",
-			[]string{"uuid", "interface"}, nil,
+			[]string{"uuid", "interface", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainNetTxBytes: prometheus.NewDesc(
 			"libvirtd_domain_net_tx_bytes",
 			"bytes transmitted",
-			[]string{"uuid", "interface"}, nil,
+			[]string{"uuid", "interface", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainNetTxPkts: prometheus.NewDesc(
 			"libvirtd_domain_net_tx_packets",
 			"packets transmitted",
-			[]string{"uuid", "interface"}, nil,
+			[]string{"uuid", "interface", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainNetTxErrs: prometheus.NewDesc(
 			"libvirtd_domain_net_tx_errors",
 			"transmission errors",
-			[]string{"uuid", "interface"}, nil,
+			[]string{"uuid", "interface", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainNetTxDrop: prometheus.NewDesc(
 			"libvirtd_domain_net_tx_drop",
 			"transmit packets dropped",
-			[]string{"uuid", "interface"}, nil,
+			[]string{"uuid", "interface", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 
 		DomainBlockRdReqs: prometheus.NewDesc(
 			"libvirtd_domain_block_read_requests",
 			"number of read requests",
-			[]string{"uuid", "device", "path"}, nil,
+			[]string{"uuid", "device", "path", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainBlockRdBytes: prometheus.NewDesc(
 			"libvirtd_domain_block_read_bytes",
 			"number of read bytes",
-			[]string{"uuid", "device", "path"}, nil,
+			[]string{"uuid", "device", "path", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainBlockRdTimes: prometheus.NewDesc(
 			"libvirtd_domain_block_read_times",
 			"total time (ns) spent on reads",
-			[]string{"uuid", "device", "path"}, nil,
+			[]string{"uuid", "device", "path", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainBlockWrReqs: prometheus.NewDesc(
 			"libvirtd_domain_block_write_requests",
 			"number of written requests",
-			[]string{"uuid", "device", "path"}, nil,
+			[]string{"uuid", "device", "path", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainBlockWrBytes: prometheus.NewDesc(
 			"libvirtd_domain_block_write_bytes",
 			"number of written bytes",
-			[]string{"uuid", "device", "path"}, nil,
+			[]string{"uuid", "device", "path", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainBlockWrTimes: prometheus.NewDesc(
 			"libvirtd_domain_block_write_times",
 			"total time (ns) spent on writes",
-			[]string{"uuid", "device", "path"}, nil,
+			[]string{"uuid", "device", "path", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainBlockFlReqs: prometheus.NewDesc(
 			"libvirtd_domain_block_flush_requests",
 			"total flush requests",
-			[]string{"uuid", "device", "path"}, nil,
+			[]string{"uuid", "device", "path", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainBlockFlTimes: prometheus.NewDesc(
 			"libvirtd_domain_block_flush_times",
 			"total time (ns) spent on cache flushing",
-			[]string{"uuid", "device", "path"}, nil,
+			[]string{"uuid", "device", "path", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainBlockAllocation: prometheus.NewDesc(
 			"libvirtd_domain_block_allocation",
 			"offset of the highest written sector",
-			[]string{"uuid", "device", "path"}, nil,
+			[]string{"uuid", "device", "path", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainBlockCapacity: prometheus.NewDesc(
 			"libvirtd_domain_block_capacity",
 			"logical size in bytes of the block device backing image",
-			[]string{"uuid", "device", "path"}, nil,
+			[]string{"uuid", "device", "path", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 		DomainBlockPhysical: prometheus.NewDesc(
 			"libvirtd_domain_block_physical",
 			"physical size in bytes of the container of the backing image",
-			[]string{"uuid", "device", "path"}, nil,
+			[]string{"uuid", "device", "path", "instance_type", "user_name", "project_name", "instance_name"}, nil,
 		),
 	}, nil
 }
@@ -438,13 +439,22 @@ func (c *DomainStatsCollector) Collect(ch chan<- prometheus.Metric) {
 			continue
 		}
 
-		c.collectNova(uuid, stat, ch)
-		c.collectState(uuid, stat, ch)
-		c.collectCPU(uuid, stat, ch)
-		c.collectBalloon(uuid, stat, ch)
-		c.collectVcpu(uuid, stat, ch)
-		c.collectNet(uuid, stat, ch)
-		c.collectBlock(uuid, stat, ch)
+                state, _, err := stat.Domain.GetState()
+                if err != nil {
+                        log.Errorln(err)
+                        continue
+                }
+
+		// nova return an error if the VM is not running
+		if state == libvirt.DOMAIN_RUNNING {
+			c.collectNova(uuid, stat, ch)
+			c.collectState(uuid, stat, ch)
+			c.collectCPU(uuid, stat, ch)
+			c.collectBalloon(uuid, stat, ch)
+			c.collectVcpu(uuid, stat, ch)
+			c.collectNet(uuid, stat, ch)
+			c.collectBlock(uuid, stat, ch)
+		}
 	}
 }
 
@@ -458,252 +468,282 @@ func (c *DomainStatsCollector) collectNova(uuid string, stat libvirt.DomainStats
 			ch <- prometheus.MustNewConstMetric(
 				c.DomainSeconds,
 				prometheus.CounterValue,
-				metadata.Seconds, uuid, metadata.Flavor.Name, metadata.User.UUID, metadata.Project.UUID,
+				metadata.Seconds, uuid, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
 			)
 		}
 	}
 }
 
 func (c *DomainStatsCollector) collectState(uuid string, stat libvirt.DomainStats, ch chan<- prometheus.Metric) {
-	ch <- prometheus.MustNewConstMetric(
-		c.DomainDomainState,
-		prometheus.GaugeValue,
-		float64(stat.State.State), uuid,
-	)
-	ch <- prometheus.MustNewConstMetric(
-		c.DomainDomainStateReason,
-		prometheus.GaugeValue,
-		float64(stat.State.Reason), uuid,
-	)
+	metadata, err := c.getNovaMetadata(stat.Domain)
+        if err != nil {
+		log.Errorln(err)
+	} else {
+		ch <- prometheus.MustNewConstMetric(
+			c.DomainDomainState,
+			prometheus.GaugeValue,
+			float64(stat.State.State), uuid, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+		)
+		ch <- prometheus.MustNewConstMetric(
+			c.DomainDomainStateReason,
+			prometheus.GaugeValue,
+			float64(stat.State.Reason), uuid, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+		)
+	}
 }
 
 func (c *DomainStatsCollector) collectCPU(uuid string, stat libvirt.DomainStats, ch chan<- prometheus.Metric) {
-	if stat.Cpu != nil {
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainCPUTime,
-			prometheus.CounterValue,
-			float64(stat.Cpu.Time), uuid,
-		)
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainCPUUser,
-			prometheus.CounterValue,
-			float64(stat.Cpu.User), uuid,
-		)
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainCPUSystem,
-			prometheus.CounterValue,
-			float64(stat.Cpu.System), uuid,
-		)
+	metadata, err := c.getNovaMetadata(stat.Domain)
+        if err != nil {
+	        log.Errorln(err)
+	} else {
+		if stat.Cpu != nil {
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainCPUTime,
+				prometheus.CounterValue,
+				float64(stat.Cpu.Time), uuid, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainCPUUser,
+				prometheus.CounterValue,
+				float64(stat.Cpu.User), uuid, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainCPUSystem,
+				prometheus.CounterValue,
+				float64(stat.Cpu.System), uuid, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+		}
 	}
 }
 
 func (c *DomainStatsCollector) collectBalloon(uuid string, stat libvirt.DomainStats, ch chan<- prometheus.Metric) {
-	ch <- prometheus.MustNewConstMetric(
-		c.DomainBalloonCurrent,
-		prometheus.GaugeValue,
-		float64(stat.Balloon.Current), uuid,
-	)
-	ch <- prometheus.MustNewConstMetric(
-		c.DomainBalloonMaximum,
-		prometheus.GaugeValue,
-		float64(stat.Balloon.Maximum), uuid,
-	)
-	if stat.Balloon.SwapInSet {
+	metadata, err := c.getNovaMetadata(stat.Domain)
+        if err != nil {
+	        log.Errorln(err)
+	} else {
 		ch <- prometheus.MustNewConstMetric(
-			c.DomainBalloonSwapIn,
-			prometheus.CounterValue,
-			float64(stat.Balloon.SwapIn), uuid,
-		)
-	}
-	if stat.Balloon.SwapOutSet {
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainBalloonSwapOut,
-			prometheus.CounterValue,
-			float64(stat.Balloon.SwapOut), uuid,
-		)
-	}
-	if stat.Balloon.MajorFaultSet {
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainBalloonMajorFault,
-			prometheus.CounterValue,
-			float64(stat.Balloon.MajorFault), uuid,
-		)
-	}
-	if stat.Balloon.MinorFaultSet {
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainBalloonMinorFault,
-			prometheus.CounterValue,
-			float64(stat.Balloon.MinorFault), uuid,
-		)
-	}
-	if stat.Balloon.UnusedSet {
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainBalloonUnused,
+			c.DomainBalloonCurrent,
 			prometheus.GaugeValue,
-			float64(stat.Balloon.Unused), uuid,
+			float64(stat.Balloon.Current), uuid, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
 		)
-	}
-	if stat.Balloon.AvailableSet {
 		ch <- prometheus.MustNewConstMetric(
-			c.DomainBalloonAvailable,
+			c.DomainBalloonMaximum,
 			prometheus.GaugeValue,
-			float64(stat.Balloon.Available), uuid,
+			float64(stat.Balloon.Maximum), uuid, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
 		)
-	}
-	if stat.Balloon.RssSet {
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainBalloonRss,
-			prometheus.GaugeValue,
-			float64(stat.Balloon.Rss), uuid,
-		)
-	}
-	if stat.Balloon.UsableSet {
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainBalloonUsable,
-			prometheus.GaugeValue,
-			float64(stat.Balloon.Usable), uuid,
-		)
-	}
-	if stat.Balloon.DiskCachesSet {
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainBalloonDiskCaches,
-			prometheus.GaugeValue,
-			float64(stat.Balloon.DiskCaches), uuid,
-		)
-	}
-	if stat.Balloon.HugetlbPgAllocSet {
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainBalloonHugetlbPgAlloc,
-			prometheus.CounterValue,
-			float64(stat.Balloon.HugetlbPgAlloc), uuid,
-		)
-	}
-	if stat.Balloon.HugetlbPgFailSet {
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainBalloonHugetlbPgFail,
-			prometheus.CounterValue,
-			float64(stat.Balloon.HugetlbPgFail), uuid,
-		)
+		if stat.Balloon.SwapInSet {
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainBalloonSwapIn,
+				prometheus.CounterValue,
+				float64(stat.Balloon.SwapIn), uuid, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+		}
+		if stat.Balloon.SwapOutSet {
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainBalloonSwapOut,
+				prometheus.CounterValue,
+				float64(stat.Balloon.SwapOut), uuid, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+		}
+		if stat.Balloon.MajorFaultSet {
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainBalloonMajorFault,
+				prometheus.CounterValue,
+				float64(stat.Balloon.MajorFault), uuid, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+		}
+		if stat.Balloon.MinorFaultSet {
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainBalloonMinorFault,
+				prometheus.CounterValue,
+				float64(stat.Balloon.MinorFault), uuid, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+		}
+		if stat.Balloon.UnusedSet {
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainBalloonUnused,
+				prometheus.GaugeValue,
+				float64(stat.Balloon.Unused), uuid, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+		}
+		if stat.Balloon.AvailableSet {
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainBalloonAvailable,
+				prometheus.GaugeValue,
+				float64(stat.Balloon.Available), uuid, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+		}
+		if stat.Balloon.RssSet {
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainBalloonRss,
+				prometheus.GaugeValue,
+				float64(stat.Balloon.Rss), uuid, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+		}
+		if stat.Balloon.UsableSet {
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainBalloonUsable,
+				prometheus.GaugeValue,
+				float64(stat.Balloon.Usable), uuid, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+		}
+		if stat.Balloon.DiskCachesSet {
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainBalloonDiskCaches,
+				prometheus.GaugeValue,
+				float64(stat.Balloon.DiskCaches), uuid, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+		}
+		if stat.Balloon.HugetlbPgAllocSet {
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainBalloonHugetlbPgAlloc,
+				prometheus.CounterValue,
+				float64(stat.Balloon.HugetlbPgAlloc), uuid, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+		}
+		if stat.Balloon.HugetlbPgFailSet {
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainBalloonHugetlbPgFail,
+				prometheus.CounterValue,
+				float64(stat.Balloon.HugetlbPgFail), uuid, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+		}
 	}
 }
 
 func (c *DomainStatsCollector) collectVcpu(uuid string, stat libvirt.DomainStats, ch chan<- prometheus.Metric) {
-	for vcpu, vcpuStats := range stat.Vcpu {
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainVcpuState,
-			prometheus.GaugeValue,
-			float64(vcpuStats.State), uuid, strconv.Itoa(vcpu),
-		)
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainVcpuTime,
-			prometheus.CounterValue,
-			float64(vcpuStats.Time), uuid, strconv.Itoa(vcpu),
-		)
+	metadata, err := c.getNovaMetadata(stat.Domain)
+        if err != nil {
+	        log.Errorln(err)
+	} else {
+		for vcpu, vcpuStats := range stat.Vcpu {
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainVcpuState,
+				prometheus.GaugeValue,
+				float64(vcpuStats.State), uuid, strconv.Itoa(vcpu), metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainVcpuTime,
+				prometheus.CounterValue,
+				float64(vcpuStats.Time), uuid, strconv.Itoa(vcpu), metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+		}
 	}
 }
 
 func (c *DomainStatsCollector) collectNet(uuid string, stat libvirt.DomainStats, ch chan<- prometheus.Metric) {
-	for _, netStats := range stat.Net {
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainNetRxBytes,
-			prometheus.CounterValue,
-			float64(netStats.RxBytes), uuid, netStats.Name,
-		)
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainNetRxPkts,
-			prometheus.CounterValue,
-			float64(netStats.RxPkts), uuid, netStats.Name,
-		)
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainNetRxErrs,
-			prometheus.CounterValue,
-			float64(netStats.RxErrs), uuid, netStats.Name,
-		)
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainNetRxDrop,
-			prometheus.CounterValue,
-			float64(netStats.RxDrop), uuid, netStats.Name,
-		)
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainNetTxBytes,
-			prometheus.CounterValue,
-			float64(netStats.TxBytes), uuid, netStats.Name,
-		)
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainNetTxPkts,
-			prometheus.CounterValue,
-			float64(netStats.TxPkts), uuid, netStats.Name,
-		)
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainNetTxErrs,
-			prometheus.CounterValue,
-			float64(netStats.TxErrs), uuid, netStats.Name,
-		)
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainNetTxDrop,
-			prometheus.GaugeValue,
-			float64(netStats.TxDrop), uuid, netStats.Name,
-		)
+	metadata, err := c.getNovaMetadata(stat.Domain)
+        if err != nil {
+	        log.Errorln(err)
+	} else {
+		for _, netStats := range stat.Net {
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainNetRxBytes,
+				prometheus.CounterValue,
+				float64(netStats.RxBytes), uuid, netStats.Name, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainNetRxPkts,
+				prometheus.CounterValue,
+				float64(netStats.RxPkts), uuid, netStats.Name, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainNetRxErrs,
+				prometheus.CounterValue,
+				float64(netStats.RxErrs), uuid, netStats.Name, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainNetRxDrop,
+				prometheus.CounterValue,
+				float64(netStats.RxDrop), uuid, netStats.Name, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainNetTxBytes,
+				prometheus.CounterValue,
+				float64(netStats.TxBytes), uuid, netStats.Name, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainNetTxPkts,
+				prometheus.CounterValue,
+				float64(netStats.TxPkts), uuid, netStats.Name, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainNetTxErrs,
+				prometheus.CounterValue,
+				float64(netStats.TxErrs), uuid, netStats.Name, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainNetTxDrop,
+				prometheus.GaugeValue,
+				float64(netStats.TxDrop), uuid, netStats.Name, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+		}
 	}
 }
 
 func (c *DomainStatsCollector) collectBlock(uuid string, stat libvirt.DomainStats, ch chan<- prometheus.Metric) {
-	for device, blockStats := range stat.Block {
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainBlockRdReqs,
-			prometheus.CounterValue,
-			float64(blockStats.RdReqs), uuid, strconv.Itoa(device), blockStats.Path,
-		)
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainBlockRdBytes,
-			prometheus.CounterValue,
-			float64(blockStats.RdBytes), uuid, strconv.Itoa(device), blockStats.Path,
-		)
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainBlockRdTimes,
-			prometheus.CounterValue,
-			float64(blockStats.RdTimes), uuid, strconv.Itoa(device), blockStats.Path,
-		)
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainBlockWrReqs,
-			prometheus.CounterValue,
-			float64(blockStats.WrReqs), uuid, strconv.Itoa(device), blockStats.Path,
-		)
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainBlockWrBytes,
-			prometheus.CounterValue,
-			float64(blockStats.WrBytes), uuid, strconv.Itoa(device), blockStats.Path,
-		)
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainBlockWrTimes,
-			prometheus.CounterValue,
-			float64(blockStats.WrTimes), uuid, strconv.Itoa(device), blockStats.Path,
-		)
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainBlockFlReqs,
-			prometheus.CounterValue,
-			float64(blockStats.FlReqs), uuid, strconv.Itoa(device), blockStats.Path,
-		)
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainBlockFlTimes,
-			prometheus.CounterValue,
-			float64(blockStats.FlTimes), uuid, strconv.Itoa(device), blockStats.Path,
-		)
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainBlockAllocation,
-			prometheus.GaugeValue,
-			float64(blockStats.Allocation), uuid, strconv.Itoa(device), blockStats.Path,
-		)
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainBlockCapacity,
-			prometheus.GaugeValue,
-			float64(blockStats.Capacity), uuid, strconv.Itoa(device), blockStats.Path,
-		)
-		ch <- prometheus.MustNewConstMetric(
-			c.DomainBlockPhysical,
-			prometheus.GaugeValue,
-			float64(blockStats.Physical), uuid, strconv.Itoa(device), blockStats.Path,
-		)
+	metadata, err := c.getNovaMetadata(stat.Domain)
+        if err != nil {
+	        log.Errorln(err)
+	} else {
+		for device, blockStats := range stat.Block {
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainBlockRdReqs,
+				prometheus.CounterValue,
+				float64(blockStats.RdReqs), uuid, strconv.Itoa(device), blockStats.Path, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+				ch <- prometheus.MustNewConstMetric(
+				c.DomainBlockRdBytes,
+				prometheus.CounterValue,
+				float64(blockStats.RdBytes), uuid, strconv.Itoa(device), blockStats.Path, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainBlockRdTimes,
+				prometheus.CounterValue,
+				float64(blockStats.RdTimes), uuid, strconv.Itoa(device), blockStats.Path, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainBlockWrReqs,
+				prometheus.CounterValue,
+				float64(blockStats.WrReqs), uuid, strconv.Itoa(device), blockStats.Path, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainBlockWrBytes,
+				prometheus.CounterValue,
+				float64(blockStats.WrBytes), uuid, strconv.Itoa(device), blockStats.Path, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainBlockWrTimes,
+				prometheus.CounterValue,
+				float64(blockStats.WrTimes), uuid, strconv.Itoa(device), blockStats.Path, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainBlockFlReqs,
+				prometheus.CounterValue,
+				float64(blockStats.FlReqs), uuid, strconv.Itoa(device), blockStats.Path, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainBlockFlTimes,
+				prometheus.CounterValue,
+				float64(blockStats.FlTimes), uuid, strconv.Itoa(device), blockStats.Path, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainBlockAllocation,
+				prometheus.GaugeValue,
+				float64(blockStats.Allocation), uuid, strconv.Itoa(device), blockStats.Path, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainBlockCapacity,
+				prometheus.GaugeValue,
+				float64(blockStats.Capacity), uuid, strconv.Itoa(device), blockStats.Path, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+			ch <- prometheus.MustNewConstMetric(
+				c.DomainBlockPhysical,
+				prometheus.GaugeValue,
+				float64(blockStats.Physical), uuid, strconv.Itoa(device), blockStats.Path, metadata.Flavor.Name, metadata.User.Name, metadata.Project.Name, metadata.Instance,
+			)
+		}
 	}
 }
 
