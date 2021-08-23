@@ -25,8 +25,6 @@ github.com/julienschmidt/httprouter v1.2.0/go.mod h1:SYymIcj16QtmaHHD7aYtjjsJG7V
 github.com/konsorten/go-windows-terminal-sequences v1.0.1 h1:mweAR1A6xJ3oS2pRaGiHgQ4OO8tzTaLawm8vnODuwDk=
 github.com/konsorten/go-windows-terminal-sequences v1.0.1/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
 github.com/kr/logfmt v0.0.0-20140226030751-b84e30acd515/go.mod h1:+0opPa2QZZtGFBFZlji/RkVcI2GknAs/DXo4wKdlNEc=
-github.com/libvirt/libvirt-go v5.10.0+incompatible h1:01fwkdUHH2hk4YyFNCr48OvSGqXYLzp9cofUpeyeLNc=
-github.com/libvirt/libvirt-go v5.10.0+incompatible/go.mod h1:34zsnB4iGeOv7Byj6qotuW8Ya4v4Tr43ttjz/F0wjLE=
 github.com/libvirt/libvirt-go v6.6.0+incompatible h1:d7HosxKYYkc/jvswzShcuJWCbuklBGIpU2fcky+7nDc=
 github.com/libvirt/libvirt-go v6.6.0+incompatible/go.mod h1:34zsnB4iGeOv7Byj6qotuW8Ya4v4Tr43ttjz/F0wjLE=
 github.com/matttproud/golang_protobuf_extensions v1.0.1 h1:4hp9jkHxhMHkqkrB3Ix0jegS5sx/RkqARlsWZ6pIwiU=
