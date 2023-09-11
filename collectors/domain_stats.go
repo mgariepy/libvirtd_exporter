@@ -19,7 +19,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/libvirt/libvirt-go"
+	"gitlab.com/libvirt/libvirt-go-module"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/common/log"
 )
