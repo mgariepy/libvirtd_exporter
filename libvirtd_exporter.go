@@ -17,7 +17,7 @@ package main
 import (
 	"net/http"
 
-	"gitlab.com/libvirt/libvirt-go-module"
+	"libvirt.org/go/libvirt"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/prometheus/common/log"
